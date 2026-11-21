@@ -3,6 +3,7 @@ package me.ajh123.be_quiet_negotiator.mixins;
 import com.google.common.collect.ImmutableSet;
 import me.ajh123.be_quiet_negotiator.BeQuietNegotiator;
 import me.ajh123.be_quiet_negotiator.ClientConfig;
+import me.ajh123.be_quiet_negotiator.SafeServerConfigLoader;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.configuration.ClientConfigurationPacketListener;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
@@ -12,7 +13,6 @@ import net.minecraft.network.protocol.configuration.ServerConfigurationPacketLis
 //? if >=1.21.11 {
 import net.minecraft.resources.Identifier;
 //?}
-import net.neoforged.fml.config.ConfigTracker;
 //? if <1.21.2 {
 /*import net.neoforged.neoforge.network.configuration.CheckFeatureFlags;
 *///?}
@@ -104,7 +104,7 @@ public class NetworkRegistryMixin {
             //?}
 
             // We are on the client, connected to a vanilla server, We have to load the default configs.
-            ConfigTracker.INSTANCE.loadDefaultServerConfigs();
+            SafeServerConfigLoader.loadDefaultServerConfigs();
 
             NetworkFilters.injectIfNecessary(listener.getConnection());
 
