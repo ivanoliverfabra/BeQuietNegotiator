@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import me.ajh123.be_quiet_negotiator.BeQuietNegotiator;
 import me.ajh123.be_quiet_negotiator.ClientConfig;
 import net.minecraft.network.ConnectionProtocol;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ClientCommonPacketListener;
 import net.minecraft.network.protocol.configuration.ClientConfigurationPacketListener;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 //? if <1.21.11 {
@@ -25,10 +23,10 @@ import net.neoforged.neoforge.network.registration.ChannelAttributes;
 import net.neoforged.neoforge.network.registration.NetworkPayloadSetup;
 import net.neoforged.neoforge.network.registration.NetworkRegistry;
 //? if >=1.21.8 {
-/*
+
 import net.neoforged.neoforge.client.network.registration.ClientNetworkRegistry;
 import net.neoforged.neoforge.network.registration.NetworkPayloadSetup;
-*///?}
+//?}
 import net.neoforged.neoforge.network.registration.PayloadRegistration;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,28 +38,28 @@ import java.util.Map;
 import java.util.Set;
 
 //? if <1.21.8 {
-@Mixin(NetworkRegistry.class)
-//?}
-//? if >=1.21.8 {
-/*@Mixin(ClientNetworkRegistry.class)
+/*@Mixin(NetworkRegistry.class)
 *///?}
+//? if >=1.21.8 {
+@Mixin(ClientNetworkRegistry.class)
+//?}
 public class NetworkRegistryMixin {
     //? if <1.21.8 {
-    @Inject(
+    /*@Inject(
             method = "initializeNeoForgeConnection(Lnet/minecraft/network/protocol/configuration/ServerConfigurationPacketListener;Ljava/util/Map;)V",
             at = @At("TAIL"),
             remap = false
     )
     private static void initializeNeoForgeConnection(ServerConfigurationPacketListener listener, Map<ConnectionProtocol, Set<ModdedNetworkQueryComponent>> clientChannels, CallbackInfo ci) {
-    //?}
+    *///?}
     //? if >=1.21.8 {
-    /*@Inject(
+    @Inject(
             method = "initializeNeoForgeConnection(Lnet/minecraft/network/protocol/configuration/ClientConfigurationPacketListener;Lnet/neoforged/neoforge/network/registration/NetworkPayloadSetup;)V",
             at = @At("TAIL"),
             remap = false
     )
     private static void initializeNeoForgeConnection(ClientConfigurationPacketListener listener, NetworkPayloadSetup setup, CallbackInfo ci) {
-    *///?}
+    //?}
         BeQuietNegotiator.isConnectedToVanillaServer = false;
     }
 
@@ -163,39 +161,4 @@ public class NetworkRegistryMixin {
         }
         return PAYLOAD_REGISTRATIONS;
     }
-    //? if >=1.21.11 {
-    /*@SuppressWarnings("unchecked")
-    private static Map<ConnectionProtocol, Map<Identifier, PayloadRegistration<?>>> getConnectionProtocolMap() {
-        Field payloadRegistrationsField = null;
-        try {
-            payloadRegistrationsField = NetworkRegistry.class.getDeclaredField("PAYLOAD_REGISTRATIONS");
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-        payloadRegistrationsField.setAccessible(true);
-
-        Map<ConnectionProtocol, Map<Identifier, PayloadRegistration<?>>> PAYLOAD_REGISTRATIONS = null;
-        try {
-            PAYLOAD_REGISTRATIONS = (Map<ConnectionProtocol, Map<Identifier, PayloadRegistration<?>>>) payloadRegistrationsField.get(null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return PAYLOAD_REGISTRATIONS;
-    }
-    *///?}
-
-    //? if <1.21.8 {
-    @Inject(
-            method = "checkPacket(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/protocol/common/ClientCommonPacketListener;)V",
-            at = @At("HEAD"),
-            remap = false,
-            cancellable = true
-    )
-    private static void checkPacket(Packet<?> packet, ClientCommonPacketListener listener, CallbackInfo ci) {
-        // If we are connected to a vanilla server, we don't need to check the packet.
-        if (ClientConfig.bypassNegotiationErrors() && BeQuietNegotiator.isConnectedToVanillaServer) {
-            ci.cancel();
-        }
-    }
-    //?}
 }

@@ -22,7 +22,8 @@ public class MixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         //? if >=1.21.2 {
-        if (mixinClassName.equals("me.ajh123.be_quiet_negotiator.mixins.CheckFeatureFlagsMixin")) {
+        if (mixinClassName.equals("me.ajh123.be_quiet_negotiator.mixins.CheckFeatureFlagsMixin")
+                || mixinClassName.equals("me.ajh123.be_quiet_negotiator.mixins.TagCollectorMixin")) {
             return false;
         }
         //? }

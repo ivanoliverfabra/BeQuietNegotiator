@@ -2,7 +2,6 @@ package me.ajh123.be_quiet_negotiator.mixins;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.DecoderException;
 import me.ajh123.be_quiet_negotiator.BeQuietNegotiator;
 import me.ajh123.be_quiet_negotiator.ClientConfig;
 import net.minecraft.network.*;
@@ -68,10 +67,14 @@ public class PacketDecoderMixin {
                     }
                 }
                 // </Default Minecraft implementation>
-            } catch (DecoderException | IOException e) {
+            } catch (RuntimeException | IOException e) {
                 BeQuietNegotiator.LOGGER.error("Error decoding packet:", e);
-                ci.cancel();
+                // Discard whatever is left of this frame so the next packet starts at a clean boundary.
+                byteBuf.skipBytes(byteBuf.readableBytes());
             }
+            // We fully handled this frame (decoded it, or dropped it after an error), so the vanilla
+            // implementation must not run as well - it would try to decode the same frame a second time.
+            ci.cancel();
         }
         // if false let Mixins automatically apply the default Minecraft implementation no work needed for us this is automatically done by the Mixin system
     }

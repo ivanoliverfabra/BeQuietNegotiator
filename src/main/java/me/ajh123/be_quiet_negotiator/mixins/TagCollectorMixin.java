@@ -20,6 +20,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TagCollector.class)
 *///?}
+//? if >=1.21.2 {
+// Placeholder target - the mixin plugin excludes this mixin on 1.21.2+ where TagCollector no longer needs patching.
+// Every class listed in the mixin config must carry @Mixin, otherwise Mixin refuses to load the config.
+@org.spongepowered.asm.mixin.Mixin(me.ajh123.be_quiet_negotiator.BeQuietNegotiator.class)
+//?}
 public class TagCollectorMixin {
     //? if <1.21.2 {
     /*@Shadow

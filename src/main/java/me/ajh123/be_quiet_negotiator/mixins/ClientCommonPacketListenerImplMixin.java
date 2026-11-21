@@ -16,7 +16,7 @@ public class ClientCommonPacketListenerImplMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void onPacketError(Packet<?> arg, Exception exception, CallbackInfo ci) {
+    private void onPacketError(Packet<?> arg, Exception exception, CallbackInfo ci) {
         if (ClientConfig.ignorePacketHandlerErrors()) {
             ci.cancel();
             BeQuietNegotiator.LOGGER.error("Failed to handle packet {}", arg, exception);
